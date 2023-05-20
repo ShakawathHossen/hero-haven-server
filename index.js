@@ -34,7 +34,6 @@ async function run() {
     // recieved add toy data from client side
     app.post("/toys", async (req, res) => {
       const newToy = req.body;
-      console.log("adding new toy: ", newToy);
       const result = await toysCollection.insertOne(newToy);
       console.log("added count", result.insertedCount);
       res.send(result);
@@ -58,35 +57,56 @@ async function run() {
 
     // find specific data from mongo db
 
-// delete specific data from mongo db 
+    // update specific data component
+    app.get("/toy/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.findOne(query);
+      res.send(result);
+    });
 
-app.delete('/toy/:id', async (req, res) => {
+    // update specific data
 
-const id = req.params.id;
-const query = { _id: new ObjectId(id) };
-const result = await toysCollection.deleteOne(query);
-res.send(result);
+    // delete specific data from mongo db
+
+    app.delete("/toy/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // delete specific data from mongo db
+
+    // update specific data 
+
+    app.put('/toy/:id', async (req, res) => {
+
+      const id = req.params.id;
+      const filter= {_id: new ObjectId(id)};
+      const options= {upsert: true};
+      const updatedToy=req.body;
+      const toy={
+        $set: {
+          figureName:updatedToy.figureName,
+          sellerName: updatedToy.sellerName,
+          sellerEmail: updatedToy.sellerEmail,
+          price: updatedToy.price,
+          subCategory: updatedToy.subCategory,
+          subCategoryCode: updatedToy.subCategoryCode,
+          Ratings: updatedToy.Ratings,
+          quantity: updatedToy.quantity,
+          photo: updatedToy.photo,
+          details: updatedToy.details,
+
+        }
+      }
+      const result = await toysCollection.updateOne(filter, toy, options);
+      res.send(result);
+    })
 
 
-
-
-
-
-
-});
-
-
-
-// delete specific data from mongo db 
-
-
-
-
-
-
-
-
-
+    // update specific data 
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
