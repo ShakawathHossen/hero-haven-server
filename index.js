@@ -64,24 +64,26 @@ async function run() {
       res.send(result);
     });
 
-
     // update specific data
 
-    // category wise data 
-     app.get('/categorytoys/:text', async (req, res) => {
-      if(req.params.text=='Batman' || req.params.text=='Spiderman' || req.params.text=='IRONMAN' || req.params.text=='Naruto' || req.params.text=='Avengers')
-      {
-        const results = await toysCollection.find({subCategory: req.params.text})
-        .toArray();
+    // category wise data
+    app.get("/categorytoys/:text", async (req, res) => {
+      if (
+        req.params.text == "Batman" ||
+        req.params.text == "Spiderman" ||
+        req.params.text == "IRONMAN" ||
+        req.params.text == "Naruto" ||
+        req.params.text == "Avengers"
+      ) {
+        const results = await toysCollection
+          .find({ subCategory: req.params.text })
+          .toArray();
         return res.send(results);
-      }
-      else {
+      } else {
         const results = await toysCollection.find({}).toArray();
       }
-     })
-
-
-    // category wise data 
+    });
+    // category wise data
 
     // delete specific data from mongo db
 
@@ -94,17 +96,16 @@ async function run() {
 
     // delete specific data from mongo db
 
-    // update specific data 
+    // update specific data
 
-    app.put('/toy/:id', async (req, res) => {
-
+    app.put("/toy/:id", async (req, res) => {
       const id = req.params.id;
-      const filter= {_id: new ObjectId(id)};
-      const options= {upsert: true};
-      const updatedToy=req.body;
-      const toy={
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedToy = req.body;
+      const toy = {
         $set: {
-          figureName:updatedToy.figureName,
+          figureName: updatedToy.figureName,
           sellerName: updatedToy.sellerName,
           sellerEmail: updatedToy.sellerEmail,
           price: updatedToy.price,
@@ -114,15 +115,13 @@ async function run() {
           quantity: updatedToy.quantity,
           photo: updatedToy.photo,
           details: updatedToy.details,
-
-        }
-      }
+        },
+      };
       const result = await toysCollection.updateOne(filter, toy, options);
       res.send(result);
-    })
+    });
 
-
-    // update specific data 
+    // update specific data
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
