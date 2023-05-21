@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // create db
     const toysCollection = client.db("heroHaven").collection("toys");
     // create db
@@ -35,7 +35,6 @@ async function run() {
     app.post("/toys", async (req, res) => {
       const newToy = req.body;
       const result = await toysCollection.insertOne(newToy);
-      console.log("added count", result.insertedCount);
       res.send(result);
     });
 
@@ -65,7 +64,24 @@ async function run() {
       res.send(result);
     });
 
+
     // update specific data
+
+    // category wise data 
+     app.get('/categorytoys/:text', async (req, res) => {
+      if(req.params.text=='Batman' || req.params.text=='Spiderman' || req.params.text=='IRONMAN' || req.params.text=='Naruto' || req.params.text=='Avengers')
+      {
+        const results = await toysCollection.find({subCategory: req.params.text})
+        .toArray();
+        return res.send(results);
+      }
+      else {
+        const results = await toysCollection.find({}).toArray();
+      }
+     })
+
+
+    // category wise data 
 
     // delete specific data from mongo db
 
